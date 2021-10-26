@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function init() {
-    if [ "$EUID" = 0 ]; then
+    if [ "$(whoami)" = "root" ]; then
         if [[ -n "$realm" ]]; then
             installPackages
             adJoin
