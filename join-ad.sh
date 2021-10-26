@@ -2,7 +2,7 @@
 
 function init() {
     if [ "$EUID" = 0 ]; then
-        if [[ -z "$realm" ]]; then
+        if [[ -n "$realm" ]]; then
             installPackages
             adJoin
             summary
@@ -40,10 +40,10 @@ function adJoin() {
     logToScreen "Do you want to join the following REALM? To proceed, enter your credentials"
     realm discover "$realm" || logToScreen "Can't discover realm" --error
     realm join "$realm" -U "$adminuser" || logToScreen "Can't join AD" --error
-    if [[ -z "$homedir" ]]; then
+    if [[ -n "$homedir" ]]; then
         echo "override_homedir = $homedir" | tee -a /etc/sssd/sssd.conf
     fi
-    if [[ -z "$shell" ]]; then
+    if [[ -n "$shell" ]]; then
         sed -i '/default_shell/d' /etc/sssd/sssd.conf
         echo "default_shell = $shell" | tee -a /etc/sssd/sssd.conf
     fi
@@ -136,3 +136,4 @@ while test $# -gt 0; do
     esac
     shift
 done
+init
