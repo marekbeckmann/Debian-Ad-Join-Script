@@ -51,7 +51,9 @@ function adJoin() {
     echo "use_fully_qualified_names = False" | tee -a /etc/sssd/sssd.conf
     systemctl restart sssd
     pam-auth-update --enable mkhomedir
-    sed -i "/auth required/ s/$/ UMASK=${umask}/" /etc/pam.d/common-session
+    if [[ -n "$umask" ]]; then
+        sed -i "/.*pam_mkhomedir.so.*/ s/$/ UMASK=${umask}/" /etc/pam.d/common-session
+    fi
     id "$adminuser" || logToScreen "AD Join failed" --error
     if [[ -n "$permUser" ]]; then
         IFS=',' read -ra ADDR <<<"$permUser"
