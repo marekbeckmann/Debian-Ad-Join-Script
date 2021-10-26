@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function init() {
-    if [ "$(whoami)" = "root" ]; then
-        if [ "$realm" != "" ]; then
+    if [ "$EUID" = 0 ]; then
+        if [[ -z "$realm" ]]; then
             installPackages
             adJoin
             summary
@@ -40,10 +40,10 @@ function adJoin() {
     logToScreen "Do you want to join the following REALM? To proceed, enter your credentials"
     realm discover "$realm" || logToScreen "Can't discover realm" --error
     realm join "$realm" -U "$adminuser" || logToScreen "Can't join AD" --error
-    if [ "$homedir" != "" ]; then
+    if [[ -z "$homedir" ]]; then
         echo "override_homedir = $homedir" | tee -a /etc/sssd/sssd.conf
     fi
-    if [ "$shell" != "" ]; then
+    if [[ -z "$shell" ]]; then
         sed -i '/default_shell/d' /etc/sssd/sssd.conf
         echo "default_shell = $shell" | tee -a /etc/sssd/sssd.conf
     fi
@@ -51,7 +51,22 @@ function adJoin() {
     echo "use_fully_qualified_names = False" | tee -a /etc/sssd/sssd.conf
     systemctl restart sssd
     pam-auth-update --enable mkhomedir
+    sed -i "/auth required/ s/$/ UMASK=${umask}/" /etc/pam.d/common-session
     id "$adminuser" || logToScreen "AD Join failed" --error
+    if [[ -n "$permUser" ]]; then
+        IFS=',' read -ra ADDR <<<"$permUser"
+        for i in "${ADDR[@]}"; do
+            realm permit "$i"
+        done
+
+    fi
+
+    if [[ -n "$permGroup" ]]; then
+        IFS=',' read -ra ADDR <<<"$permGroup"
+        for j in "${ADDR[@]}"; do
+            realm permit -g "$j"
+        done
+    fi
 }
 
 function logToScreen() {
@@ -74,7 +89,9 @@ You can use the following Options:
   [-d] [--ad-domain] => Realm you want to join
   [-p] [--homedir] => Overrides the home directory path
   [-s] [--shell] => Overrides the default shell
-
+  [-m] [--umask] => Specify UMASK for the homedir of users
+  [-a] [--allow-user] => Allow user(s) (comma seperated)
+  [-r] [--allow-group] => Allow group(s) (comma seperated)
 More Documentation can be found on Github: https://github.com/marekbeckmann/debian-ad-join-script"
 }
 
@@ -94,6 +111,15 @@ while test $# -gt 0; do
         ;;
     -s | --shell)
         shell="$2"
+        ;;
+    -m | --umask)
+        umask="$2"
+        ;;
+    -a | --allow-user)
+        permUser="$2"
+        ;;
+    -r | --allow-group)
+        permGroup="$2"
         ;;
     --*)
         logToScreen "Unknown option $1" --error
