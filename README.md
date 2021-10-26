@@ -25,7 +25,10 @@ You can run the script with the following parameters:
 | `-d` `--ad-domain` `<domain>` | Specifies domain to join |
 | `-u` `--admin-user` `<userName>` | Specifies privileged user for AD join |
 | `-p` `--homedir` `<directory>` | Overrides home directory for SSSD config (Defaults to `/home/%u@%d`) |
-| `-s` `--shell` | Overrides shell for SSSD config |
+| `-s` `--shell` `<shell>`| Overrides shell for SSSD config |
+| `-m` `--umask` `<umask>` | Specify UMASK for the homedir of users |
+| `-a` `--allow-user` `<user1,user2>` | Allow user(s) (comma seperated) |
+| `-r` `--allow-group` `<group1,group2>` | Allow group(s) (comma seperated) |
 
 
 **Example:**
