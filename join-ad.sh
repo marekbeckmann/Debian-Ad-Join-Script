@@ -52,7 +52,7 @@ function adJoin() {
     systemctl restart sssd
     pam-auth-update --enable mkhomedir
     if [[ -n "$umask" ]]; then
-        sed -i "/.*pam_mkhomedir.so.*/ s/$/ UMASK=${umask}/" /etc/pam.d/common-session
+        sed -i "/.*pam_mkhomedir.so.*/ s/$/ umask=${umask}/" /etc/pam.d/common-session
     fi
     id "$adminuser" || logToScreen "AD Join failed" --error
     if [[ -n "$permUser" ]]; then
