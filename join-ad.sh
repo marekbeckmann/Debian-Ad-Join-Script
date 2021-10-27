@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function init() {
+    getParams "$@"
     if [ "$(whoami)" = "root" ]; then
         if [[ -n "$realm" ]]; then
             installPackages
@@ -97,43 +98,46 @@ You can use the following Options:
 More Documentation can be found on Github: https://github.com/marekbeckmann/debian-ad-join-script"
 }
 
-while test $# -gt 0; do
-    case "$1" in
-    -h | --help)
-        helpMsg
-        ;;
-    -u | --adminuser)
-        adminuser="$2"
-        ;;
-    -d | --ad-domain)
-        realm="$2"
-        ;;
-    -p | --homedir)
-        homedir="$2"
-        ;;
-    -s | --shell)
-        shell="$2"
-        ;;
-    -m | --umask)
-        umask="$2"
-        ;;
-    -a | --allow-user)
-        permUser="$2"
-        ;;
-    -r | --allow-group)
-        permGroup="$2"
-        ;;
-    --*)
-        logToScreen "Unknown option $1" --error
-        helpMsg
-        exit 1
-        ;;
-    -*)
-        logToScreen "Unknown option $1" --error
-        helpMsg
-        exit 1
-        ;;
-    esac
-    shift
-done
-init
+function getParams() {
+    while test $# -gt 0; do
+        case "$1" in
+        -h | --help)
+            helpMsg
+            ;;
+        -u | --adminuser)
+            adminuser="$2"
+            ;;
+        -d | --ad-domain)
+            realm="$2"
+            ;;
+        -p | --homedir)
+            homedir="$2"
+            ;;
+        -s | --shell)
+            shell="$2"
+            ;;
+        -m | --umask)
+            umask="$2"
+            ;;
+        -a | --allow-user)
+            permUser="$2"
+            ;;
+        -r | --allow-group)
+            permGroup="$2"
+            ;;
+        --*)
+            logToScreen "Unknown option $1" --error
+            helpMsg
+            exit 1
+            ;;
+        -*)
+            logToScreen "Unknown option $1" --error
+            helpMsg
+            exit 1
+            ;;
+        esac
+        shift
+    done
+}
+
+init "$@"
