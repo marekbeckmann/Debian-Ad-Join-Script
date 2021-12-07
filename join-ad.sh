@@ -6,6 +6,7 @@ function init() {
         if [[ -n "$realm" ]]; then
             installPackages
             adJoin
+            enableSudo
             summary
         else
             logToScreen "Please provide a REALM to join"
