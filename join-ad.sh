@@ -84,6 +84,19 @@ function logToScreen() {
     fi
     sleep 1
 }
+
+function enableSudo {
+if [[ -n "$sudoUsers" ]]; then
+        IFS=',' read -ra ADDR <<<"$sudoUsers"
+        for i in "${ADDR[@]}"; do
+            tee /etc/sudoers.d/adm_"$i" >/dev/null <<EOT
+${i}   ALL=(ALL:ALL) ALL
+EOT
+        done
+
+    fi
+}
+
 function helpMsg() {
     logToScreen "Help for AD Setup Script (Debian 10/11)
 You can use the following Options:
@@ -95,6 +108,7 @@ You can use the following Options:
   [-m] [--umask] => Specify UMASK for the homedir of users
   [-a] [--allow-user] => Allow user(s) (comma seperated)
   [-r] [--allow-group] => Allow group(s) (comma seperated)
+  [-e] [--enable-sudo] => Allow user(s) to have root privileges (SUDO)
 More Documentation can be found on Github: https://github.com/marekbeckmann/debian-ad-join-script"
 }
 
@@ -129,6 +143,9 @@ function getParams() {
             logToScreen "Unknown option $1" --error
             helpMsg
             exit 1
+            ;;
+        -e | --enable-sudo)
+            sudoUsers="$2"
             ;;
         -*)
             logToScreen "Unknown option $1" --error
