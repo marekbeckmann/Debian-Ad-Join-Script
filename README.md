@@ -29,6 +29,7 @@ You can run the script with the following parameters:
 | `-m` `--umask` `<umask>` | Specify UMASK for the homedir of users |
 | `-a` `--allow-user` `<user1,user2>` | Allow user(s) (comma seperated) |
 | `-r` `--allow-group` `<group1,group2>` | Allow group(s) (comma seperated) |
+| `-e` `--enable-sudo` `<user1,user2>` | Allow user(s) to have root privileges (SUDO) |
 
 
 **Example:**
