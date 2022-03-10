@@ -140,13 +140,13 @@ function getParams() {
         -r | --allow-group)
             permGroup="$2"
             ;;
+        -e | --enable-sudo)
+            sudoUsers="$2"
+            ;;
         --*)
             logToScreen "Unknown option $1" --error
             helpMsg
             exit 1
-            ;;
-        -e | --enable-sudo)
-            sudoUsers="$2"
             ;;
         -*)
             logToScreen "Unknown option $1" --error
