@@ -52,7 +52,7 @@ function adJoin() {
     sed -i '/use_fully_qualified_names/d' /etc/sssd/sssd.conf
     echo "use_fully_qualified_names = False" | tee -a /etc/sssd/sssd.conf
     systemctl restart sssd
-    pam-auth-update --enable mkhomedir --force
+    pam-auth-update --enable mkhomedir --force #Wrap with option [-n] [--no-mkhomedir]
     if [[ -n "$umask" ]]; then
         sed -i "/.*pam_mkhomedir.so.*/ s/$/ umask=${umask}/" /etc/pam.d/common-session
     fi
@@ -134,6 +134,7 @@ function getParams() {
         -m | --umask)
             umask="$2"
             ;;
+        #add option [-n] [--no-mkhomedir]
         -a | --allow-user)
             permUser="$2"
             ;;
