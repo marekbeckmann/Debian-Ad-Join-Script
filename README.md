@@ -27,6 +27,7 @@ You can run the script with the following parameters:
 | `-p` `--homedir` `<directory>` | Overrides home directory for SSSD config (Defaults to `/home/%u@%d`) |
 | `-s` `--shell` `<shell>`| Overrides shell for SSSD config |
 | `-m` `--umask` `<umask>` | Specify UMASK for the homedir of users |
+| `-n` `--no-mkhomedir` | Disable automatic creation of home directories |
 | `-a` `--allow-user` `<user1,user2>` | Allow user(s) (comma seperated) |
 | `-r` `--allow-group` `<group1,group2>` | Allow group(s) (comma seperated) |
 | `-e` `--enable-sudo` `<user1,user2>` | Allow user(s) to have root privileges (SUDO) |
